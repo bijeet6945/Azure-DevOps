@@ -27,13 +27,16 @@ parameters:
 pool:
   vmImage: 'ubuntu-latest'
 
-jobs:
-- ${{ each env in parameters.environment == 'ALL' ? ['DEV', 'QA'] : [parameters.environment] }}:
-  - job: BuildAndTest
-    displayName: Build and Test ${{ env }}
+stages:
+- stage: APIMANAGER 
+  displayName: API MANAGER CONFIG
+  jobs:
+  - job: BuildApiManager
+    displayName: Build API Manager
+
     steps:
-    - script: echo "Building the project for ${{ env }}"
+    - script: echo "Building the project for ${{ parameters.environment }}"
       displayName: 'Run a one-line script'
     - script: |
         echo "Selected Business Group: ${{ parameters.businessGroup }}"
-        echo "Selected Environment: ${{ env }}"
+        echo "Selected Environment: ${{ parameters.environment }}"
