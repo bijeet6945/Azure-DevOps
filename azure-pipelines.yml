@@ -40,3 +40,34 @@ stages:
     - script: |
         echo "Selected Business Group: ${{ parameters.businessGroup }}"
         echo "Selected Environment: ${{ parameters.environment }}"
+    
+    - task: Bash@3
+      displayName: 'CONFIGURE API MANAGER'
+      # env:
+      #   ENVS: ${{ parameters.environments }}
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Split the environments into an array
+          IFS=',' read -r -a envArray <<< "${{ parameters.environment }}"
+
+          # If 'ALL' is selected, replace with all possible environments
+          if [[ " ${envArray[@]} " =~ " ALL " ]]; then
+            envArray=("DEV" "QA" "STAGE" "PROD")
+          else
+            envArray=("${{ parameters.environment }}")
+          fi
+
+          # # If 'DEV' is explicitly selected, replace envArray with 'DEV' only
+          # if [[ "${envArray[@]}" =~ " DEV " ]]; then
+          #   envArray=("DEV")
+          # fi
+
+          echo "Environments to process: ${envArray[@]}"
+
+          # # Define the list of environments
+          # environments=("${{ parameters.environment }}")
+
+          # if [[ " ${envArray[@]} " =~ " ALL " ]]; then
+          #   environments=("DEV" "QA" "UAT")
+          #   for environment in "${environments[@]}"; do 
