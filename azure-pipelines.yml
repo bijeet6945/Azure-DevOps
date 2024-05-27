@@ -23,3 +23,17 @@ parameters:
   - 'QA'
   - 'STAGE'
   - 'PROD'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+jobs:
+- ${{ each env in parameters.environment == 'ALL' ? ['DEV', 'QA'] : [parameters.environment] }}:
+  - job: BuildAndTest
+    displayName: Build and Test ${{ env }}
+    steps:
+    - script: echo "Building the project for ${{ env }}"
+      displayName: 'Run a one-line script'
+    - script: |
+        echo "Selected Business Group: ${{ parameters.businessGroup }}"
+        echo "Selected Environment: ${{ env }}"
